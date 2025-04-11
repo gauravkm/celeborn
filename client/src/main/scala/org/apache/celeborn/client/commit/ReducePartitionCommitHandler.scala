@@ -382,6 +382,7 @@ class ReducePartitionCommitHandler(
           JavaUtils.newConcurrentHashMap(),
           Array.empty,
           new util.HashSet[Integer](),
+          Collections.emptyMap(),
           new AtomicIntegerArray(mapperCountForReducer.get(shuffleId).length())))
     } else {
       // LocalNettyRpcCallContext is for the UTs
@@ -391,7 +392,8 @@ class ReducePartitionCommitHandler(
           reducerFileGroupsMap.getOrDefault(shuffleId, JavaUtils.newConcurrentHashMap()),
           getMapperAttempts(shuffleId),
           Collections.emptySet[Integer](),
-          mapperCountForReducer.get(shuffleId)))
+          Collections.emptyMap(),
+          mapperCountForReducer.get(shuffleId)
         )
 
         // only check whether broadcast enabled for the UTs

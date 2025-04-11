@@ -132,7 +132,6 @@ public abstract class CelebornInputStream extends InputStream {
             metricsCallback,
             expectedMapperCount);
       }
-    }
   }
 
   public static CelebornInputStream empty() {

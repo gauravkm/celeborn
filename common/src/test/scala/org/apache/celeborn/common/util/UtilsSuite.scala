@@ -19,7 +19,6 @@ package org.apache.celeborn.common.util
 
 import java.util
 import java.util.Collections
-
 import org.apache.celeborn.CelebornFunSuite
 import org.apache.celeborn.common.CelebornConf
 import org.apache.celeborn.common.client.{MasterEndpointResolver, StaticMasterEndpointResolver}
@@ -28,6 +27,9 @@ import org.apache.celeborn.common.identity.DefaultIdentityProvider
 import org.apache.celeborn.common.protocol.{PartitionLocation, TransportModuleConstants}
 import org.apache.celeborn.common.protocol.message.ControlMessages.{GetReducerFileGroupResponse, MapperEnd}
 import org.apache.celeborn.common.protocol.message.StatusCode
+import org.roaringbitmap.RoaringBitmap
+
+import java.util.concurrent.atomic.AtomicIntegerArray
 
 class UtilsSuite extends CelebornFunSuite {
 
@@ -145,7 +147,7 @@ class UtilsSuite extends CelebornFunSuite {
   }
 
   test("MapperEnd class convert with pb") {
-    val mapperEnd = MapperEnd(1, 1, 1, 2, 1, Collections.emptyMap())
+    val mapperEnd = MapperEnd(1, 1, 1, 2, 1, Collections.emptyMap(), 1, new RoaringBitmap())
     val mapperEndTrans =
       Utils.fromTransportMessage(Utils.toTransportMessage(mapperEnd)).asInstanceOf[MapperEnd]
     assert(mapperEnd == mapperEndTrans)
@@ -203,6 +205,7 @@ class UtilsSuite extends CelebornFunSuite {
       fileGroup,
       attempts,
       Collections.emptySet(),
+      Collections.emptyMap(),
       new AtomicIntegerArray(0))
     val responseTrans = Utils.fromTransportMessage(Utils.toTransportMessage(response)).asInstanceOf[
       GetReducerFileGroupResponse]

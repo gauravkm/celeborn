@@ -20,14 +20,11 @@ package org.apache.celeborn.common.util
 import java.io.File
 import java.util
 import java.util.concurrent.atomic.AtomicIntegerArray
-
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 import scala.util.Random
-
 import com.google.common.collect.{Lists, Sets}
 import org.apache.hadoop.shaded.org.apache.commons.lang3.RandomStringUtils
-
 import org.apache.celeborn.CelebornFunSuite
 import org.apache.celeborn.common.identity.UserIdentifier
 import org.apache.celeborn.common.meta._
@@ -38,6 +35,8 @@ import org.apache.celeborn.common.protocol.message.ControlMessages.{GetReducerFi
 import org.apache.celeborn.common.quota.ResourceConsumption
 import org.apache.celeborn.common.util.PbSerDeUtils.{fromPbPackedPartitionLocationsPair, toPbPackedPartitionLocationsPair}
 import org.apache.celeborn.common.write.PushFailedBatch
+
+import java.util.Collections
 
 class PbSerDeUtilsTest extends CelebornFunSuite {
 
@@ -596,6 +595,7 @@ class PbSerDeUtilsTest extends CelebornFunSuite {
       shuffleMap,
       attempts,
       succeedPartitions,
+      Collections.emptyMap(),
       mapperCountForReducer)
 
     val transportGetReducerFileGroup =
@@ -634,6 +634,7 @@ class PbSerDeUtilsTest extends CelebornFunSuite {
       shuffleMap,
       attempts,
       succeedPartitions,
+      Collections.emptyMap(),
       mapperCountForReducer)
 
     val transportGetReducerFileGroup =
@@ -672,6 +673,7 @@ class PbSerDeUtilsTest extends CelebornFunSuite {
       shuffleMap,
       attempts,
       succeedPartitions,
+      Collections.emptyMap(),
       mapperCountForReducer)
 
     val transportGetReducerFileGroup =

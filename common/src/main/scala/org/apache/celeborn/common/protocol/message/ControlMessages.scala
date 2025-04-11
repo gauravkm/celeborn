@@ -291,6 +291,8 @@ object ControlMessages extends Logging {
 
   case class MapperEndResponse(status: StatusCode) extends MasterMessage
 
+  case class ReducerPartitionEndResponse(status: StatusCode) extends MasterMessage
+
   case class GetReducerFileGroup(shuffleId: Int, isSegmentGranularityVisible: Boolean)
     extends MasterMessage
 
@@ -302,7 +304,7 @@ object ControlMessages extends Logging {
       attempts: Array[Int] = Array.emptyIntArray,
       partitionIds: util.Set[Integer] = Collections.emptySet[Integer](),
       pushFailedBatches: util.Map[String, util.Set[PushFailedBatch]] = Collections.emptyMap(),
-      mapperCountForReducer: AtomicIntegerArray,
+      mapperCountForReducer: AtomicIntegerArray = new AtomicIntegerArray(0),
       broadcast: Array[Byte] = Array.emptyByteArray)
     extends MasterMessage
 
@@ -745,9 +747,9 @@ object ControlMessages extends Logging {
           attemptId,
           numMappers,
           numPartitions,
-          writtenPartitions,
+          pushFailedBatch: PushFailedBatch,
           partitionId,
-          pushFailedBatch) =>
+          writtenPartitions) =>
       val pushFailedMap = pushFailedBatch.asScala.map { case (k, v) =>
         val resultValue = PbSerDeUtils.toPbPushFailedBatchSet(v)
         (k, resultValue)
@@ -770,7 +772,6 @@ object ControlMessages extends Logging {
         .build().toByteArray
       new TransportMessage(MessageType.MAPPER_END_RESPONSE, payload)
 
-    case class ReducerPartitionEndResponse(status: StatusCode) extends MasterMessage
 
     case GetReducerFileGroup(shuffleId, isSegmentGranularityVisible) =>
       val payload = PbGetReducerFileGroup.newBuilder()

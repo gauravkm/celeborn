@@ -21,13 +21,16 @@ import java.util
 import java.util.Collections
 import java.util.concurrent.{ConcurrentHashMap, ScheduledExecutorService, ScheduledFuture, TimeUnit}
 import java.util.concurrent.atomic.{AtomicInteger, LongAdder}
+
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ArrayBuffer
+
 import org.roaringbitmap.RoaringBitmap
+
 import org.apache.celeborn.client.CommitManager.CommittedPartitionInfo
 import org.apache.celeborn.client.LifecycleManager.ShuffleFailedWorkers
 import org.apache.celeborn.client.commit.{CommitFilesParam, CommitHandler, MapPartitionCommitHandler, ReducePartitionCommitHandler}
-import org.apache.celeborn.client.listener.{WorkerStatusListener, WorkersStatus}
+import org.apache.celeborn.client.listener.{WorkersStatus, WorkerStatusListener}
 import org.apache.celeborn.common.{CelebornConf, CommitMetadata}
 import org.apache.celeborn.common.internal.Logging
 import org.apache.celeborn.common.meta.WorkerInfo
@@ -213,16 +216,15 @@ class CommitManager(appUniqueId: String, val conf: CelebornConf, lifecycleManage
   }
 
   def finishMapperAttempt(
-                           shuffleId: Int,
-                           mapId: Int,
-                           attemptId: Int,
-                           numMappers: Int,
-                           partitionId: Int = -1,
-                           pushFailedBatches: util.Map[String, util.Set[PushFailedBatch]] = Collections.emptyMap(),
-                           numPartitions: Int = -1,
-                           crc32PerPartition: Array[Int] = new Array[Int](0),
-                           bytesWrittenPerPartition: Array[Long] = new Array[Long](0))
-      : (Boolean, Boolean) = {
+      shuffleId: Int,
+      mapId: Int,
+      attemptId: Int,
+      numMappers: Int,
+      partitionId: Int = -1,
+      pushFailedBatches: util.Map[String, util.Set[PushFailedBatch]] = Collections.emptyMap(),
+      numPartitions: Int = -1,
+      crc32PerPartition: Array[Int] = new Array[Int](0),
+      bytesWrittenPerPartition: Array[Long] = new Array[Long](0)): (Boolean, Boolean) = {
     getCommitHandler(shuffleId).finishMapperAttempt(
       shuffleId,
       mapId,
